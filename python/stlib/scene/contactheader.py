@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-def ContactHeader(applyTo, alarmDistance, contactDistance, frictionCoef=0.0):
+def ContactHeader(applyTo, alarmDistance, contactDistance, frictionCoef=0.0, constraintSolver="GenericConstraintSolver"):
     '''
     Args:
         applyTo (Sofa.Node): the node to attach the object to
@@ -27,10 +27,10 @@ def ContactHeader(applyTo, alarmDistance, contactDistance, frictionCoef=0.0):
     '''
     if applyTo.getObject("DefaultPipeline", warning=False) is None:
             applyTo.createObject('DefaultPipeline')
-            
+
     applyTo.createObject('BruteForceDetection')
 
-    applyTo.createObject('RuleBasedContactManager', rules='0 * FrictionContact?mu='+str(frictionCoef),
+    applyTo.createObject('RuleBasedContactManager', responseParams="mu="+str(frictionCoef),
                                                     name='Response', response='FrictionContact')
     applyTo.createObject('LocalMinDistance',
                         alarmDistance=alarmDistance, contactDistance=contactDistance,
@@ -38,9 +38,9 @@ def ContactHeader(applyTo, alarmDistance, contactDistance, frictionCoef=0.0):
 
     if applyTo.getObject("FreeMotionAnimationLoop", warning=False) is None:
             applyTo.createObject('FreeMotionAnimationLoop')
-            
-    if applyTo.getObject("GenericConstraintSolver", warning=False) is None:        
-            applyTo.createObject('GenericConstraintSolver', tolerance="1e-6", maxIterations="1000")
+
+    if applyTo.getObject(constraintSolver, warning=False) is None:
+            applyTo.createObject(constraintSolver, tolerance="1e-6", maxIterations="1000")
 
     return applyTo
 
